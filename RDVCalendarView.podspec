@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { "Robert Dimitrov" => "robert_dimitrov@me.com" }
   s.platform     = :ios, '5.0'
-  s.source       = { :git => "https://github.com/robbdimitrov/RDVCalendarView.git", :tag => "v1.0.7" }
+  s.source       = { :git => "https://github.com/satgi/RDVCalendarView.git"}
   s.source_files  = 'RDVCalendarView', 'RDVCalendarView/**/*.{h,m}'
   s.framework = 'UIKit', 'CoreGraphics', 'Foundation'
   s.requires_arc = true
