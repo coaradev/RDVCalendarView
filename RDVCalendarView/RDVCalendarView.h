@@ -62,6 +62,16 @@ typedef NS_OPTIONS(NSInteger, RDVCalendarViewDayCellSeparatorType) {
 @property (nonatomic, readonly) UIButton *forwardButton;
 
 /**
+ * Returns the header view. (read-only)
+ */
+@property (nonatomic, readonly) UIView *headerView;
+
+/**
+ * Returns the height for header view.
+ */
+@property (nonatomic) CGFloat headerViewHeight;
+
+/**
  * Returns array containing the week day labels.
  */
 @property (nonatomic, readonly) NSArray *weekDayLabels;
@@ -72,9 +82,34 @@ typedef NS_OPTIONS(NSInteger, RDVCalendarViewDayCellSeparatorType) {
 @property (nonatomic) CGFloat weekDayHeight;
 
 /**
+ * Returns the color of the week day label color without saturday.
+ */
+@property (nonatomic) UIColor *weekDayLabelColor;
+
+/**
+ * Returns the color of the Saturday label color.
+ */
+@property (nonatomic) UIColor *saturdayLabelColor;
+
+/**
+ * Returns the color of the Sunday label color.
+ */
+@property (nonatomic) UIColor *sundayLabelColor;
+
+/**
+ * The color of week day labels in the calendar view.
+ */
+@property(nonatomic, retain) UIColor *weekDayBackgroundColor;
+
+/**
  * The style for separators used between day cells.
  */
 @property (nonatomic) RDVCalendarViewDayCellSeparatorType separatorStyle;
+
+/**
+ * Asks week day labels has separators.
+ */
+@property (nonatomic) BOOL hasWeekDayLabelSeparator;
 
 /**
  * Returs the color of the current day cell.
@@ -125,6 +160,11 @@ typedef NS_OPTIONS(NSInteger, RDVCalendarViewDayCellSeparatorType) {
  * Date components representing the currently displayed month. (read-only)
  */
 @property (atomic, strong, readonly) NSDateComponents *month;
+
+/**
+ * The format of month label.
+ */
+@property (nonatomic) NSString *monthLabelFormat;
 
 #pragma mark - Creating Calendar View Day Cells
 

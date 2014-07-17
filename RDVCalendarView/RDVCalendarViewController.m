@@ -32,9 +32,18 @@
     
     _calendarView = [[RDVCalendarView alloc] initWithFrame:applicationFrame];
     [_calendarView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-    [_calendarView setSeparatorStyle:RDVCalendarViewDayCellSeparatorTypeHorizontal];
+    [_calendarView setSeparatorStyle:RDVCalendarViewDayCellSeparatorTypeBoth];
     [_calendarView setBackgroundColor:[UIColor whiteColor]];
     [_calendarView setDelegate:self];
+
+	[_calendarView setMonthLabelFormat:@"yyyy年M月"];
+	[_calendarView setHeaderViewHeight:30.0f];
+	[_calendarView setSeparatorColor:[UIColor redColor]];
+	[_calendarView setSaturdayLabelColor:[UIColor blueColor]];
+	[_calendarView setSundayLabelColor:[UIColor redColor]];
+	[_calendarView setWeekDayHeight:30.0f];
+	[_calendarView setHasWeekDayLabelSeparator:YES];
+	[_calendarView setWeekDayBackgroundColor:[UIColor greenColor]];
     self.view = _calendarView;
 }
 

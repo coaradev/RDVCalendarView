@@ -87,32 +87,45 @@
     _dayCellEdgeInsets = UIEdgeInsetsZero;
     
     _dayCellClass = [RDVCalendarDayCell class];
+
+	_headerViewHeight = 60.0f;
     
     _weekDayHeight = 30.0f;
+
+	_weekDayLabelColor = [UIColor grayColor];
+	_saturdayLabelColor = [UIColor grayColor];
+	_sundayLabelColor = [UIColor grayColor];
+
+	_monthLabelFormat = @"MMMM yyyy";
+
+	_weekDayBackgroundColor = [UIColor whiteColor];
+	_hasWeekDayLabelSeparator = NO;
     
     // Setup header view
+
+	_headerView = [[UIView alloc] init];
+	[self addSubview:_headerView];
     
     _monthLabel = [[UILabel alloc] init];
     [_monthLabel setFont:[UIFont systemFontOfSize:22]];
     [_monthLabel setTextColor:[UIColor blackColor]];
     [_monthLabel setTextAlignment:NSTextAlignmentCenter];
-    [self addSubview:_monthLabel];
+	[_monthLabel setBackgroundColor:[UIColor clearColor]];
+    [_headerView addSubview:_monthLabel];
     
     _backButton = [[UIButton alloc] init];
     [_backButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [_backButton setTitle:@"Prev" forState:UIControlStateNormal];
     [_backButton addTarget:self action:@selector(showPreviousMonth)
           forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_backButton];
+    [_headerView addSubview:_backButton];
     
     _forwardButton = [[UIButton alloc] init];
     [_forwardButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [_forwardButton setTitle:@"Next" forState:UIControlStateNormal];
     [_forwardButton addTarget:self action:@selector(showNextMonth)
              forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_forwardButton];
-    
-    [self setupWeekDays];
+    [_headerView addSubview:_forwardButton];
     
     // Setup calendar
     
@@ -129,9 +142,7 @@
               NSCalendarCalendarUnit
                          fromDate:currentDate];
     _month.day = 1;
-    
-    [self updateMonthLabelMonth:_month];
-    
+
     [self updateMonthViewMonth:_month];
     
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
@@ -155,16 +166,20 @@
 
 - (void)layoutSubviews {
     CGSize viewSize = self.frame.size;
-    CGSize headerSize = CGSizeMake(viewSize.width, 60.0f);
+    CGSize headerSize = CGSizeMake(viewSize.width, [self headerViewHeight]);
     CGFloat backButtonWidth = MAX([[self backButton] sizeThatFits:CGSizeMake(100, 50)].width, 44);
     CGFloat forwardButtonWidth = MAX([[self forwardButton] sizeThatFits:CGSizeMake(100, 50)].width, 44);
     
     CGSize previousMonthButtonSize = CGSizeMake(backButtonWidth, 50);
     CGSize nextMonthButtonSize = CGSizeMake(forwardButtonWidth, 50);
-    CGSize titleSize = CGSizeMake(viewSize.width - previousMonthButtonSize.width - nextMonthButtonSize.width - 10 - 10,
-                                  50);
+    CGSize titleSize = CGSizeMake(viewSize.width - previousMonthButtonSize.width - nextMonthButtonSize.width - 10 - 10, [self headerViewHeight]);
     
     // Layout header view
+
+	CGRect headerViewRect = CGRectZero;
+	headerViewRect.size = headerSize;
+	[[self headerView] setBackgroundColor:[UIColor grayColor]];
+	[[self headerView] setFrame:headerViewRect];
     
     [[self backButton] setFrame:CGRectMake(10, roundf(headerSize.height / 2 - previousMonthButtonSize.height / 2),
                                          previousMonthButtonSize.width, previousMonthButtonSize.height)];
@@ -176,6 +191,9 @@
     [[self forwardButton] setFrame:CGRectMake(headerSize.width - 10 - nextMonthButtonSize.width,
                                             roundf(headerSize.height / 2 - nextMonthButtonSize.height / 2),
                                             nextMonthButtonSize.width, nextMonthButtonSize.height)];
+
+	[self updateMonthLabelMonth:_month];
+	[self setupWeekDays];
     
     // Calculate sizes and distances
     
@@ -221,9 +239,9 @@
         [weekDayLabel setFrame:CGRectMake(labelXPosition, CGRectGetMaxY([[self monthLabel] frame]), dayWidth, [self weekDayHeight])];
         column++;
     }
-    
+
     // Calendar grid layout
-    
+
     CGFloat startigCalendarY = CGRectGetMaxY([[self weekDayLabels][0] frame]);
     CGFloat elementVerticalDistance = round(((viewSize.height - startigCalendarY) - [self dayCellEdgeInsets].top -
                                              [self dayCellEdgeInsets].bottom - (dayHeight * rowCount)) / rowCount);
@@ -274,17 +292,33 @@
                 }
             }
         }
+
+		// a bottom separator
+		if (dayIndex == [self numberOfDays] - 1) {
+            if ([self separatorStyle] & RDVCalendarViewDayCellSeparatorTypeHorizontal) {
+                if (dayIndex < [self numberOfDays]) {
+					UIView *separator = [self dayCellSeparator];
+
+					CGFloat lastSeparatorY = startigCalendarY + [self dayCellEdgeInsets].top + ((row + 1) * dayHeight) + ((row + 1) * elementVerticalDistance);
+
+                    [separator setFrame:CGRectMake([self separatorEdgeInsets].left, lastSeparatorY,
+                                                   viewSize.width - [self separatorEdgeInsets].left -
+                                                   [self separatorEdgeInsets].right, 1)];
+                }
+            }
+        }
         
         if (row == 1 && column < [[self weekDayLabels] count]) {
             if ([self separatorStyle] & RDVCalendarViewDayCellSeparatorTypeVertical) {
                 UIView *separator = [self dayCellSeparator];
-                
+
+				CGFloat distanceIfWeekDayLabelHasSeparator = ([self hasWeekDayLabelSeparator]) ? [self weekDayHeight] : .0f;
                 [separator setFrame:CGRectMake([self separatorEdgeInsets].left + CGRectGetMaxX(dayCell.frame) +
                                                roundf(elementHorizonralDistance / 2),
                                                weekDayLabelsEndY + ([self separatorEdgeInsets].top -
-                                                                               [self separatorEdgeInsets].bottom),
+                                                                               [self separatorEdgeInsets].bottom) - distanceIfWeekDayLabelHasSeparator,
                                                1, viewSize.height - [self separatorEdgeInsets].top -
-                                               [self separatorEdgeInsets].bottom)];
+                                               [self separatorEdgeInsets].bottom + distanceIfWeekDayLabelHasSeparator)];
             }
         }
         
@@ -343,31 +377,43 @@
     
     // weekdaySymbols returns and array of strings
     NSMutableArray *weekDays = [[NSMutableArray alloc] initWithCapacity:[weekSymbols count]];
+	NSMutableArray *weekDayNumbers = [[NSMutableArray alloc] initWithCapacity:[weekSymbols count]];
     for (NSInteger day = firstWeekDay; day < [weekSymbols count]; day++) {
         [weekDays addObject:[weekSymbols objectAtIndex:day]];
+		[weekDayNumbers addObject:[NSNumber numberWithInteger:day]];
     }
-    
+
     if (firstWeekDay != 0) {
         for (NSInteger day = 0; day < firstWeekDay; day++) {
             [weekDays addObject:[weekSymbols objectAtIndex:day]];
+			[weekDayNumbers addObject:[NSNumber numberWithInteger:day]];
         }
     }
-    
+
     _weekDays = [NSArray arrayWithArray:weekDays];
-    
+
     if (![_weekDayLabels count]) {
         NSMutableArray *weekDayLabels = [[NSMutableArray alloc] initWithCapacity:[_weekDays count]];
-        
-        for (NSString *weekDayString in _weekDays) {
+
+		for (NSInteger index = 0; index < [_weekDays count]; index++) {
+			NSString *weekDayString = [_weekDays objectAtIndex:index];
+			NSInteger weekDayNumber = [[weekDayNumbers objectAtIndex:index] integerValue];
             UILabel *weekDayLabel = [[UILabel alloc] init];
             [weekDayLabel setFont:[UIFont systemFontOfSize:14]];
-            [weekDayLabel setTextColor:[UIColor grayColor]];
+			if (weekDayNumber == 0) {
+				[weekDayLabel setTextColor:[self sundayLabelColor]];
+			} else if (weekDayNumber == 6) {
+				[weekDayLabel setTextColor:[self saturdayLabelColor]];
+			} else {
+				[weekDayLabel setTextColor:[self weekDayLabelColor]];
+			}
+			[weekDayLabel setBackgroundColor:[self weekDayBackgroundColor]];
             [weekDayLabel setTextAlignment:NSTextAlignmentCenter];
             [weekDayLabel setText:weekDayString];
-            [weekDayLabels addObject:weekDayLabel];
+			[weekDayLabels addObject:weekDayLabel];
             [self addSubview:weekDayLabel];
         }
-        
+
         _weekDayLabels = [NSArray arrayWithArray:weekDayLabels];
     } else {
         NSInteger index = 0;
@@ -381,7 +427,7 @@
 
 - (void)updateMonthLabelMonth:(NSDateComponents*)month {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"MMMM yyyy";
+	formatter.dateFormat = [self monthLabelFormat];
     
     NSDate *date = [month.calendar dateFromComponents:month];
     self.monthLabel.text = [formatter stringFromDate:date];
