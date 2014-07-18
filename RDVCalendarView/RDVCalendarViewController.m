@@ -44,6 +44,7 @@
 	[_calendarView setWeekDayHeight:30.0f];
 	[_calendarView setHasWeekDayLabelSeparator:YES];
 	[_calendarView setWeekDayBackgroundColor:[UIColor greenColor]];
+	[_calendarView setHeaderViewBackgroundColor:[UIColor grayColor]];
     self.view = _calendarView;
 }
 

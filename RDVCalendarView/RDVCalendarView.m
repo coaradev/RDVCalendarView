@@ -89,6 +89,7 @@
     _dayCellClass = [RDVCalendarDayCell class];
 
 	_headerViewHeight = 60.0f;
+	_headerViewBackgroundColor = [UIColor whiteColor];
     
     _weekDayHeight = 30.0f;
 
@@ -178,7 +179,7 @@
 
 	CGRect headerViewRect = CGRectZero;
 	headerViewRect.size = headerSize;
-	[[self headerView] setBackgroundColor:[UIColor grayColor]];
+	[[self headerView] setBackgroundColor:[self headerViewBackgroundColor]];
 	[[self headerView] setFrame:headerViewRect];
     
     [[self backButton] setFrame:CGRectMake(10, roundf(headerSize.height / 2 - previousMonthButtonSize.height / 2),

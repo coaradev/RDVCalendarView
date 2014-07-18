@@ -72,6 +72,11 @@ typedef NS_OPTIONS(NSInteger, RDVCalendarViewDayCellSeparatorType) {
 @property (nonatomic) CGFloat headerViewHeight;
 
 /**
+ * Returns the color of the header view background color.
+ */
+@property (nonatomic) UIColor *headerViewBackgroundColor;
+
+/**
  * Returns array containing the week day labels.
  */
 @property (nonatomic, readonly) NSArray *weekDayLabels;
