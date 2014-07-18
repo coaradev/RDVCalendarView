@@ -206,11 +206,7 @@
     } else if ([self dayCellWidth]) {
         dayWidth = [self dayCellWidth];
     } else {
-        if (viewSize.width > viewSize.height) {
-            dayWidth = roundf(viewSize.width / 10);
-        } else {
-            dayWidth = roundf(viewSize.width / 7);
-        }
+		dayWidth = roundf(viewSize.width / 7);
     }
     
     CGFloat weekDayLabelsEndY = CGRectGetMaxY([[self monthLabel] frame]) + [self weekDayHeight];
@@ -221,12 +217,8 @@
     } else if ([self dayCellHeight]) {
         dayHeight = [self dayCellHeight];
     } else {
-        if (viewSize.width > viewSize.height) {
-            dayHeight = roundf((viewSize.height - weekDayLabelsEndY) / 6) -
-            [self dayCellEdgeInsets].top - [self dayCellEdgeInsets].bottom;
-        } else {
-            dayHeight = dayWidth;
-        }
+		dayHeight = roundf((viewSize.height - weekDayLabelsEndY) / 6) -
+		[self dayCellEdgeInsets].top - [self dayCellEdgeInsets].bottom;
     }
     
     CGFloat elementHorizonralDistance = roundf((viewSize.width - [self dayCellEdgeInsets].left -
