@@ -247,7 +247,7 @@
         RDVCalendarDayCell *dayCell = [self dayCellForIndex:dayIndex];
         if (![[self visibleCells] containsObject:dayCell]) {
             [_visibleCells addObject:dayCell];
-            [self addSubview:dayCell];
+			[self insertSubview:dayCell atIndex:0];
         }
         
         if ([self selectedDay] && (dayIndex + 1 == [self selectedDay].day &&
@@ -268,7 +268,7 @@
         [dayCell setFrame:CGRectMake(dayCellXPosition, startigCalendarY + dayCellYPosition, dayWidth, dayHeight)];
         
         if ([dayCell superview] != self) {
-            [self addSubview:dayCell];
+			[self insertSubview:dayCell atIndex:0];
         }
         
         // Layout separators
